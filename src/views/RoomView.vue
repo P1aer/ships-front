@@ -1,5 +1,5 @@
 <template>
-        <GamePrep :board="myBoard">
+        <GamePrep>
 
         </GamePrep>
 </template>
@@ -15,20 +15,8 @@
         data() {
             return {
                 state: "",
-                myBoard: new Board() as Board
             }
         },
-        methods: {
-           resetBoard():void {
-                   const b = new Board()
-                   b.initCells()
-                   this.myBoard = b
-                   return
-           }
-        },
-        mounted() {
-           this.resetBoard()
-        }
     })
 </script>
 

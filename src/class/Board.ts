@@ -17,7 +17,7 @@ export class Board {
     public getCell ( x: number, y: number) {
         return this.cells[y][x]
     }
-    public addShipOnBoard(ship: Ship,points: {x: number,y:number}[] ) {
+/*    public addShipOnBoard(ship: Ship,points: {x: number,y:number}[] ) {
         points.forEach((value => this.getCell(value.x,value.y).ship = ship))
-    }
+    }*/
 }
