@@ -1,11 +1,12 @@
 <template>
-    <div class="row" v-if="room.users.length < 2">
+    <div class="row">
         <h4>{{room.ind}}</h4>
         <h4>{{room.name}}</h4>
         <h4> {{room.key}}</h4>
-        <h4>{{room.public ? "public": "private"}}</h4>
+      <!--  <h4>{{room.public ? "public": "private"}}</h4>-->
+        <h4> {{room.users.length}} / 2</h4>
         <div style="align-items: center;display: flex">
-            <button @click="joinRoom"> join room</button>
+            <button :disabled="room.users.length >= 2" @click="joinRoom"> join room</button>
         </div>
 
     </div>
@@ -22,7 +23,7 @@
         },
         methods:{
             joinRoom() {
-                this.$socket.emit("ROOM:JOIN",this.room.key, () => this.$router.push(`/rooms/${this.room.key}`))
+                this.$router.push(`/rooms/${this.room.key}`)
             }
         }
     }
@@ -49,6 +50,10 @@
             padding: 0.2rem 1rem;
             cursor: pointer;
             background: teal;
+            &:disabled {
+                opacity: .6;
+                cursor: default;
+            }
         }
     }
 </style>

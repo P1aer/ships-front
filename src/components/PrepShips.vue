@@ -3,10 +3,10 @@
         <div class="field"
              @dragover.prevent
              @dragenter.prevent
-             @drop="onDrop($event)">
+             @drop.prevent="onDrop($event)">
             <div
                     draggable="true"
-                    v-for="ship in ships"
+                    v-for="ship in sortedShips"
                     :key="ship"
                     :class="['d' + ship.size]"
                     @dragstart="dragStart($event,ship)"
@@ -17,14 +17,13 @@
         <div class="buttons">
             <button @click="() => {
                 restart()
-                this.readyState = false
             }">Очистить</button>
             <button @click="() => {
                 random()
-                this.readyState = false
+                onChangeState(false)
             }">Случайная расстановка</button>
             <button :class="{'ready':readyState,'not-ready': !readyState}"
-                    @click="readyState = !readyState"
+                    @click="onChangeState(!this.readyState)"
                     :disabled="this.ships.length > 0 ">
                 Готов
             </button>
@@ -34,7 +33,8 @@
 
 <script lang="ts">
     import {Ship} from "@/class/Ship";
-    import {defineComponent, PropType} from "vue";
+    import { ElementPointData } from "@/hooks/utils";
+    import {defineComponent, PropType, toRaw} from "vue";
 
     export default  defineComponent({
         name: "PrepShips",
@@ -48,18 +48,64 @@
                 type:Array as PropType<Ship[]>,
                 required: true
             },
+            users: {
+                type: Object,
+                required: true
+            },
+            id: {
+                type: String,
+                required: true
+            },
+            setElem: {
+                type:Function as PropType<(elem : ElementPointData) => void>,
+                required: true
+            },
             restart: Function,
             random: Function
         },
         methods: {
             dragStart(evt: DragEvent,elem: Ship) {
-                evt.dataTransfer?.setData('itemId', elem.id.toString())
+                if (!evt.dataTransfer) {
+                    return
+                }
+                evt.dataTransfer.setData('itemId', elem.id.toString())
+                evt.dataTransfer.effectAllowed = 'move'
+                if(evt.currentTarget) {
+                    let i = (evt.currentTarget as HTMLDivElement).getBoundingClientRect()
+                    let x = evt.clientX - i.x
+                    let y = evt.clientY - i.y
+                    this.setElem({
+                        x,
+                        y,
+                        height: i.height,
+                        width: i.width
+                    })
+                }
             },
             onDrop(evt: DragEvent) {
-                const itemID = evt.dataTransfer?.getData('itemID') || 0
-                let ship = this.ships.find((item) => item.id == itemID)
-                if (!ship) {
-                    this.$emit("removeFromBoard",ship)
+                const cell = evt.dataTransfer?.getData('cell') || null
+                if (!cell) {
+                    return
+                }
+                this.$emit("switchShip", cell.split(' '))
+            },
+            onChangeState(state: boolean) {
+                this.readyState = state
+                this.$emit("update:users", {...this.users,[this.$socket.id]:this.readyState })
+                this.$socket.emit("ROOM:STATE",this.id,this.readyState)
+            }
+        },
+        computed : {
+            sortedShips: function() {
+                return [...this.ships].sort((a,b) => {
+                    return a.size - b.size
+                })
+            }
+        },
+        watch: {
+            "ships.length" : function () {
+                if (this.ships.length > 0 && this.id && this.readyState) {
+                    this.onChangeState(false)
                 }
             }
         }
@@ -100,21 +146,22 @@
         .field {
             margin-bottom: 1rem;
             border-radius: 4px;
-            min-height: 340px;
+            min-height: 21.25rem;
             padding: 1rem;
             display: flex;
             flex-wrap: wrap;
-            width: 350px;
+            width: 21.25rem;
             box-sizing: content-box;
             background-color: #eaeaea;
         }
     }
 
     .d1{
+        background-color:#684ec9 ;
         cursor: move;
         margin: 1rem 0.5rem;
         overflow: hidden;
-        background-color: white;
+       /* background-color: white;*/
         border: solid #684ec9 3px;
         border-radius: 2px;
         height: 3rem ;
@@ -125,7 +172,8 @@
         overflow: hidden;
         position: relative;
         margin: 1rem 0.5rem;
-        background-color: white;
+        background-color:#684ec9 ;
+/*        background-color: white;*/
         border: solid #684ec9 3px;
         border-radius: 2px;
         height: 3rem ;
@@ -136,21 +184,32 @@
         position: relative;
         overflow: hidden;
         margin: 1rem 0.5rem;
-        background-color: white;
+        background-color:#684ec9 ;
+/*        background-color: white;*/
         border: solid #684ec9 3px;
         border-radius: 2px;
         height: 3rem ;
         width: calc(3 * 3rem);
     }
     .d4 {
+        background-color:#684ec9 ;
         cursor: move;
         position: relative;
         margin: 1rem 0.5rem;
         overflow: hidden;
-        background-color: white;
         border: solid #684ec9 3px;
         border-radius: 2px;
         height: 3rem ;
         width: calc(4 * 3rem);
+    }
+    @media (max-width: 1200px) {
+        .buttons {
+            button {
+                font-size: 1rem;
+                margin-top: 0.4rem;
+                border: none;
+                padding: 1rem 1rem;
+            }
+        }
     }
 </style>

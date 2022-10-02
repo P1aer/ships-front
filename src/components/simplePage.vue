@@ -20,4 +20,9 @@
         height: 80vh;
         background-color: azure;
     }
+    @media (max-width: 1200px) {
+        .page {
+            height: 100vh;
+        }
+    }
 </style>

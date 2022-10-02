@@ -24,7 +24,7 @@
      align-items: center;
      width: 100%;
      height: fit-content;
-     padding: 10px;
+     padding: 0.6rem;
      .link {
          cursor: pointer;
          font-size: 2rem;

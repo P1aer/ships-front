@@ -23,5 +23,9 @@ export default  {
     body {
         min-height: 100%;
     }
-
+@media (max-width: 1200px) {
+    html {
+        font-size: 12px;
+    }
+}
 </style>

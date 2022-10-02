@@ -6,6 +6,7 @@ export class Cell {
     readonly y: number
     id : number
     className= ""
+    isHidden = false
 
     constructor(x:number,y:number, ship: Ship | null) {
         this.x = x
