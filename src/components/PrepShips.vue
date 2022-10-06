@@ -17,15 +17,15 @@
         <div class="buttons">
             <button @click="() => {
                 restart()
-            }">Очистить</button>
+            }">Clear</button>
             <button @click="() => {
                 random()
                 onChangeState(false)
-            }">Случайная расстановка</button>
+            }">Random placement</button>
             <button :class="{'ready':readyState,'not-ready': !readyState}"
                     @click="onChangeState(!this.readyState)"
                     :disabled="this.ships.length > 0 ">
-                Готов
+                Ready
             </button>
         </div>
     </div>
@@ -46,10 +46,6 @@
         props: {
             ships: {
                 type:Array as PropType<Ship[]>,
-                required: true
-            },
-            users: {
-                type: Object,
                 required: true
             },
             id: {
@@ -91,7 +87,6 @@
             },
             onChangeState(state: boolean) {
                 this.readyState = state
-                this.$emit("update:users", {...this.users,[this.$socket.id]:this.readyState })
                 this.$socket.emit("ROOM:STATE",this.id,this.readyState)
             }
         },
@@ -103,8 +98,8 @@
             }
         },
         watch: {
-            "ships.length" : function () {
-                if (this.ships.length > 0 && this.id && this.readyState) {
+            "ships.length" : function (data) {
+                if (data > 0 && this.id && this.readyState) {
                     this.onChangeState(false)
                 }
             }

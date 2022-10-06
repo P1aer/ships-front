@@ -1,8 +1,10 @@
 <template>
     <div class="nav">
-        <h3 class="link" @click="$router.push(link)">
-            ←
-        </h3>
+            <img class="link"
+                 @click="$router.push(link)"
+                 src="../../public/back.svg"
+                 alt="arrow back icon"
+            >
         <slot>
 
         </slot>
@@ -24,10 +26,12 @@
      align-items: center;
      width: 100%;
      height: fit-content;
-     padding: 0.6rem;
+     padding: 0px;
+     margin-bottom: 1rem;
      .link {
          cursor: pointer;
-         font-size: 2rem;
+         height: 2rem;
+         width: 2rem;
      }
  }
 </style>

@@ -17,8 +17,6 @@
                  />
                 <PrepShips
                         :id="this.id"
-                        :users="users"
-                        @update:users="this.$emit('update:users',$event)"
                         :set-elem="setElem"
                         :random="getRandomShips"
                         :restart="this.cleanPrep"

@@ -15,6 +15,9 @@ export default  {
         margin: 0;
         box-sizing: border-box;
     }
+    #app {
+        position: relative;
+    }
     html {
         font-size: 16px;
         font-family: 'Roboto', sans-serif;

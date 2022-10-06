@@ -1,9 +1,15 @@
 <template>
-    <h4 class="navbar">
-        {{users[this.$socket.id] ?
-       "ready state: " + this.readyUsers +  " / " + this.allUsers
-        : "Расставтись и нажмите готов"}}
-    </h4>
+    <div class="navbar">
+        <div class="state">
+            <span v-if="!users[this.$socket.id]">Set your ships and click ready</span>
+            <span v-else-if="this.allUsers === 1">Wait for another player to join</span>
+            <span v-else-if="this.allUsers > 1">Wait for other player to set his ships</span>
+            <span v-else></span>
+        </div>
+        <div class="counters">
+            Ready state: <span class="ready">{{this.readyUsers}}</span> / {{this.allUsers}}
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -37,6 +43,20 @@
 
 <style lang="scss" scoped>
     .navbar {
-        padding-left: 1rem;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-around;
+        font-size: 1.3rem;
+    }
+    .counters {
+
+    }
+    .state {
+        max-width: 350px;
+        width: 100%;
+    }
+    .ready {
+        color: #2AF598;
     }
 </style>
